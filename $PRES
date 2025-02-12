@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>President's Day Coin - Pre-Sale</title>
+    <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/@solana/web3.js/1.30.0/web3.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        /* Estilos Globais */
+        body {
+            font-family: 'Poppins', sans-serif;
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: white;
+            margin: 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: #ffd700;
+        }
+
+        p {
+            font-size: 1.1rem;
+            margin: 10px 0;
+        }
+
+        #countdown {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #ffd700;
+            margin: 20px 0;
+        }
+
+        button {
+            padding: 12px 24px;
+            font-size: 1rem;
+            margin: 10px;
+            cursor: pointer;
+            border: none;
+            border-radius: 25px;
+            background: #ffd700;
+            color: #1e3c72;
+            transition: background 0.3s ease;
+        }
+
+        button:hover {
+            background: #ffc107;
+        }
+
+        #status, #purchase-status {
+            font-size: 1rem;
+            margin-top: 20px;
+            color: #ffd700;
+        }
+
+        .social-link {
+            margin-top: 20px;
+            font-size: 1rem;
+        }
+
+        .social-link a {
+            color: #ffd700;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .social-link a:hover {
+            color: #ffc107;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            margin-top: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Animação de Fade-in */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .fade-in {
+            animation: fadeIn 1s ease-in-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="container fade-in">
+        <h1>🚀 President's Day Coin ($PRES) Pre-Sale 🚀</h1>
+        <p>The pre-sale ends on <strong>February 17, 2025 at 14:00 (Lisbon Time)</strong>! Don't miss your chance to grab $PRES at a discounted price!</p>
+        <p id="countdown"></p>
+        <p><strong>Minimum purchase: $5</strong></p>
+        <button onclick="connectMetaMask()">Connect MetaMask</button>
+        <button onclick="connectPhantom()">Connect Phantom</button>
+        <button onclick="buyTokens()">Buy $PRES</button>
+        <p id="status"></p>
+        <p id="purchase-status"></p>
+        <p class="social-link"><a href="https://x.com/President_Day_" target="_blank">Follow us on Twitter</a></p>
+        
+        <!-- Imagem adicionada -->
+        <img src="https://pbs.twimg.com/media/GjmNzMCWQAAi_Wn?format=jpg&name=medium" alt="Close-up portrait of President Donald Trump">
+    </div>
+
+    <script>
+        // Endereço da sua carteira Ethereum
+        const ethereumAddress = "0x15b9C9d3fe6682414935001CB13Cd2A853e7193e";
+
+        // Função para atualizar o countdown
+        function updateCountdown() {
+            const endDate = new Date("February 17, 2025 14:00:00 GMT").getTime();
+            const now = new Date().getTime();
+            const timeLeft = endDate - now;
+            
+            const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+            
+            document.getElementById("countdown").innerText = `Pre-sale ends in: ${days}d ${hours}h ${minutes}m ${seconds}s`;
+            
+            if (timeLeft < 0) {
+                document.getElementById("countdown").innerText = "Pre-sale has ended! Regular sales are now LIVE!";
+            }
+        }
+        setInterval(updateCountdown, 1000);
+
+        // Conectar MetaMask
+        async function connectMetaMask() {
+            if (window.ethereum) {
+                try {
+                    await window.ethereum.request({ method: "eth_requestAccounts" });
+                    document.getElementById("status").innerText = "MetaMask Wallet Connected!";
+                } catch (error) {
+                    document.getElementById("status").innerText = "MetaMask Connection Failed!";
+                    console.error(error);
+                }
+            } else {
+                alert("Please install MetaMask!");
+            }
+        }
+
+        // Conectar Phantom
+        async function connectPhantom() {
+            if (window.solana && window.solana.isPhantom) {
+                try {
+                    const response = await window.solana.connect();
+                    document.getElementById("status").innerText = "Phantom Wallet Connected!";
+                } catch (error) {
+                    document.getElementById("status").innerText = "Phantom Connection Failed!";
+                    console.error(error);
+                }
+            } else {
+                alert("Please install Phantom Wallet!");
+            }
+        }
+
+        // Comprar $PRES
+        async function buyTokens() {
+            const amount = 0.00000001; // Valor por $PRES
+            const minPurchase = 5; // Valor mínimo de compra em dólares
+
+            // Verifica se o usuário está conectado a uma carteira
+            if (!window.ethereum && !window.solana) {
+                alert("Please connect a wallet first!");
+                return;
+            }
+
+            // Solicita o envio de fundos
+            try {
+                if (window.ethereum) {
+                    alert(`Send at least $${minPurchase} in ETH to: ${ethereumAddress}\n\nEach $PRES costs $${amount}.\n\nTokens will be distributed after the pre-sale ends.`);
+                } else if (window.solana) {
+                    alert(`Send at least $${minPurchase} in SOL to: ${solanaAddress}\n\nEach $PRES costs $${amount}.\n\nTokens will be distributed after the pre-sale ends.`);
+                }
+
+                // Confirmação de compra
+                document.getElementById("purchase-status").innerText = "Purchase successful! Tokens will be distributed after the pre-sale ends.";
+            } catch (error) {
+                document.getElementById("purchase-status").innerText = "Error processing purchase!";
+                console.error(error);
+            }
+        }
+    </script>
+</body>
+</html> 
